@@ -37,7 +37,16 @@ def parseInfoFromSong(song):
 # Argument Parsing #
 # ################ #
 
-parser = argparse.ArgumentParser()
+formatHelp = """The Format to rename the file to. Format specifiers are: 
+			
+%%a - artist
+%%A - album
+%%t - songtitle
+%%n - track number
+
+"""
+
+parser = argparse.ArgumentParser(description="Renames songs downloaded from bandcamp to a format you like", formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument('path', help='Path to the directory containing the files or the file itself')
-parser.add_argument('format', help='The Format to rename the file to')
+parser.add_argument('format', help=formatHelp)
 arguments = parser.parse_args()
