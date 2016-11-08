@@ -82,21 +82,29 @@ def renameSongFile(path, format):
 # 
 # @param path - absolute path to the directory containing the files
 # @param format - format that the file should be renamed to
+# @param recursive (optional) - if set, subdirectories are renamed as well in a recursive fashion
 #
 # @return void
-def renameDirectory(path, format):
+def renameDirectory(path, format, recursive=False):
+
 
 	# list all the files in the directory
 	list_of_files = os.listdir(path)
 
 	# iterate through everything found
-	for entry in list_of_files:
+	for item in list_of_files:
 
-		# check if the extension is supported
-		extension = os.path.splitext(entry)[1]
-		if(str.lower(extension) in file_formats):
-			# rename the file
-			renameSongFile("%s/%s" % (path, entry), format)
+		# if it's a directory and the recursive flag was set handle it
+		if(os.path.isdir(item) and recursive):
+			# recursively handle that subdirectory
+			renameDirectory("%s/%s" % (path, item), format, recursive=True)
+		# single file
+		else:
+			# check if the extension is supported
+			extension = os.path.splitext(item)[1]
+			if(str.lower(extension) in file_formats):
+				# rename the file
+				renameSongFile("%s/%s" % (path, item), format)
 
 # --------------------------------
 
@@ -118,6 +126,7 @@ formatHelp = """The Format to rename the file to. Format specifiers are:
 parser = argparse.ArgumentParser(description="Renames songs downloaded from bandcamp to a format you like", formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument('path', help='Path to the directory containing the files or the file itself')
 parser.add_argument('format', help=formatHelp)
+parser.add_argument('-r', '--recursive', action='store_true', help="If set the program will go into sub directories and rename those files as well")
 arguments = parser.parse_args()
 
 
@@ -134,8 +143,8 @@ if(not os.path.isdir(path) and not os.path.isfile(path)):
 	sys.exit()
 
 # check if it is a full directory that has to be renamed
-if(os.path.isdir(path)):
-	renameDirectory(path, arguments.format)
+if(os.path.isdir(path)):	
+	renameDirectory(path, arguments.format, recursive=arguments.recursive)
 
 # check if it's only one file
 elif(os.path.isfile(path)):
