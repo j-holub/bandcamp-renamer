@@ -3,6 +3,14 @@ import os
 import re
 import sys
 
+# ###### #
+# Config #
+# ###### #
+
+# formats that can be downloaded from bandcamp
+file_formats = ['.mp3', '.flac', '.aac', '.ogg', '.oga', '.m4a', '.CAF', '.wav', '.aiff', '.aif', '.aifc']
+
+
 # ######### #
 # Functions #
 # ######### #
@@ -34,6 +42,7 @@ def parseInfoFromSong(song):
 
 # --------------------------
 
+
 # Takes the absolute path to a file and renames it according to the format given
 #
 # @param path   - absolute path to the songfile
@@ -64,7 +73,33 @@ def renameSongFile(path, format):
 	# rename the file
 	os.rename(path, "%s/%s%s" % (dir, new_songname, extension))
 
+
 # -------------------------------
+
+# Takes the absolute path to a directory containing the song files
+# If these files match one of the extensions specified in 'file_formats'
+# these files are renamed
+# 
+# @param path - absolute path to the directory containing the files
+# @param format - format that the file should be renamed to
+#
+# @return void
+def renameDirectory(path, format):
+
+	# list all the files in the directory
+	list_of_files = os.listdir(path)
+
+	# iterate through everything found
+	for entry in list_of_files:
+
+		# check if the extension is supported
+		extension = os.path.splitext(entry)[1]
+		if(str.lower(extension) in file_formats):
+			# rename the file
+			renameSongFile("%s/%s" % (path, entry), format)
+
+# --------------------------------
+
 
 
 # ################ #
@@ -100,11 +135,8 @@ if(not os.path.isdir(path) and not os.path.isfile(path)):
 
 # check if it is a full directory that has to be renamed
 if(os.path.isdir(path)):
-	# TODO rename folder
-	print ("dir")
+	renameDirectory(path, arguments.format)
 
 # check if it's only one file
 elif(os.path.isfile(path)):
-	# TODO rename file
-	#print("file")
 	renameSongFile(path, arguments.format)
