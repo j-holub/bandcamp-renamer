@@ -10,6 +10,10 @@ import sys
 # formats that can be downloaded from bandcamp
 file_formats = ['.mp3', '.flac', '.aac', '.ogg', '.oga', '.m4a', '.CAF', '.wav', '.aiff', '.aif', '.aifc']
 
+# regex to check for the correct file
+#            Artistname        Albumtitle         TrackNr     Songtitle
+pattern = "(\w|\s|\d|\.)*-(\w|\s|\d|\(|\)|\.|,)*-\s\d\d\s(\w|\s|\d|\(|\)|\.|,)*"
+regex = re.compile(pattern)
 
 # ######### #
 # Functions #
@@ -78,7 +82,7 @@ def renameSongFile(path, format):
 
 # Takes the absolute path to a directory containing the song files
 # If these files match one of the extensions specified in 'file_formats'
-# these files are renamed
+# and matches the bandcamp file naming convention, these files are renamed
 # 
 # @param path - absolute path to the directory containing the files
 # @param format - format that the file should be renamed to
@@ -100,9 +104,10 @@ def renameDirectory(path, format, recursive=False):
 			renameDirectory("%s/%s" % (path, item), format, recursive=True)
 		# single file
 		else:
-			# check if the extension is supported
+			# extract the file extension
 			extension = os.path.splitext(item)[1]
-			if(str.lower(extension) in file_formats):
+			# check for supported extension and bandcamp name format
+			if((str.lower(extension) in file_formats) and regex.match(item)):
 				# rename the file
 				renameSongFile("%s/%s" % (path, item), format)
 
