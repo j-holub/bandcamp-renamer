@@ -51,12 +51,13 @@ def parseInfoFromSong(song):
 
 # Takes the absolute path to a file and renames it according to the format given
 #
-# @param path   - absolute path to the songfile
-# @param format - format that the file should be renamed to
-# @param verbose (optional) - if set, messages of the renaming are output to the command line
+# @param path    - absolute path to the songfile
+# @param format  - format that the file should be renamed to
+# @param options - Dictionary to pass the command line options. Possible values are
+#				   verbose (bool) - Prints command line output
 # 
 # @return void 
-def renameSongFile(path, format, verbose=False):
+def renameSongFile(path, format, options={}):
 
 	# split the path
 	dir = os.path.dirname(path)
@@ -81,7 +82,7 @@ def renameSongFile(path, format, verbose=False):
 	os.rename(path, "%s/%s%s" % (dir, new_songname, extension))
 
 	# if verbose was set print the renaming
-	if(verbose):
+	if(options['verbose']):
 		print "--------------------------------------------"
 		print "Directory: %s" % dir
 		print "Old: '%s%s'" % (filename, extension)
@@ -97,11 +98,12 @@ def renameSongFile(path, format, verbose=False):
 # 
 # @param path - absolute path to the directory containing the files
 # @param format - format that the file should be renamed to
-# @param recursive (optional) - if set, subdirectories are renamed as well in a recursive fashion
-# @param verbose (optional) - if set, messages of the renaming are output to the command line
+# @param options - Dictionary to pass the command line options. Possible values are
+#				   recursive (bool) - subdirectories are renamed as well in a recursive fashion
+#				   verbose (bool)   - Prints command line output
 #
 # @return void
-def renameDirectory(path, format, recursive=False, verbose=False):
+def renameDirectory(path, format, options={}):
 
 
 	# list all the files in the directory
@@ -110,10 +112,11 @@ def renameDirectory(path, format, recursive=False, verbose=False):
 	# iterate through everything found
 	for item in list_of_files:
 
+		# print os.path.isdir()
 		# if it's a directory and the recursive flag was set handle it
-		if(os.path.isdir(item) and recursive):
+		if(os.path.isdir("%s/%s" % (path, item)) and options['recursive']):
 			# recursively handle that subdirectory
-			renameDirectory("%s/%s" % (path, item), format, recursive=True)
+			renameDirectory("%s/%s" % (path, item), format, options=options)
 		# single file
 		else:
 			# extract the file extension
@@ -121,7 +124,7 @@ def renameDirectory(path, format, recursive=False, verbose=False):
 			# check for supported extension and bandcamp name format
 			if((str.lower(extension) in file_formats) and regex.match(item)):
 				# rename the file
-				renameSongFile("%s/%s" % (path, item), format=format, verbose=verbose)
+				renameSongFile("%s/%s" % (path, item), format, options=options)
 
 # --------------------------------
 
@@ -160,10 +163,16 @@ if(not os.path.isdir(path) and not os.path.isfile(path)):
 	print "ERROR: '%s' is neither a file nor a directory" % path
 	sys.exit()
 
+# build the options object
+options = {
+	'recursive': arguments.recursive, # recursively handle subdirectories
+	'verbose': arguments.verbose 	  # give command line output
+}
+
 # check if it is a full directory that has to be renamed
 if(os.path.isdir(path)):	
-	renameDirectory(path, arguments.format, recursive=arguments.recursive, verbose=arguments.verbose)
+	renameDirectory(path, arguments.format, options=options)
 
 # check if it's only one file
 elif(os.path.isfile(path)):
-	renameSongFile(path, arguments.format, verbose=arguments.verbose)
+	renameSongFile(path, arguments.format, options=options)
