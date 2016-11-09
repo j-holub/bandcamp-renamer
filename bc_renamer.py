@@ -53,9 +53,10 @@ def parseInfoFromSong(song):
 #
 # @param path   - absolute path to the songfile
 # @param format - format that the file should be renamed to
+# @param verbose (optional) - if set, messages of the renaming are output to the command line
 # 
 # @return void 
-def renameSongFile(path, format):
+def renameSongFile(path, format, verbose=False):
 
 	# split the path
 	dir = os.path.dirname(path)
@@ -79,6 +80,14 @@ def renameSongFile(path, format):
 	# rename the file
 	os.rename(path, "%s/%s%s" % (dir, new_songname, extension))
 
+	# if verbose was set print the renaming
+	if(verbose):
+		print "--------------------------------------------"
+		print "Directory: %s" % dir
+		print "Old: '%s%s'" % (filename, extension)
+		print "New: '%s%s'" % (new_songname, extension)
+		print "--------------------------------------------"
+
 
 # -------------------------------
 
@@ -89,9 +98,10 @@ def renameSongFile(path, format):
 # @param path - absolute path to the directory containing the files
 # @param format - format that the file should be renamed to
 # @param recursive (optional) - if set, subdirectories are renamed as well in a recursive fashion
+# @param verbose (optional) - if set, messages of the renaming are output to the command line
 #
 # @return void
-def renameDirectory(path, format, recursive=False):
+def renameDirectory(path, format, recursive=False, verbose=False):
 
 
 	# list all the files in the directory
@@ -111,7 +121,7 @@ def renameDirectory(path, format, recursive=False):
 			# check for supported extension and bandcamp name format
 			if((str.lower(extension) in file_formats) and regex.match(item)):
 				# rename the file
-				renameSongFile("%s/%s" % (path, item), format)
+				renameSongFile("%s/%s" % (path, item), format=format, verbose=verbose)
 
 # --------------------------------
 
@@ -134,6 +144,7 @@ parser = argparse.ArgumentParser(description="Renames songs downloaded from band
 parser.add_argument('path', help='Path to the directory containing the files or the file itself')
 parser.add_argument('format', help=formatHelp)
 parser.add_argument('-r', '--recursive', action='store_true', help="If set the program will go into sub directories and rename those files as well")
+parser.add_argument('-v', '--verbose', action='store_true', help="If set the program will output messages to the command line")
 arguments = parser.parse_args()
 
 
@@ -151,8 +162,8 @@ if(not os.path.isdir(path) and not os.path.isfile(path)):
 
 # check if it is a full directory that has to be renamed
 if(os.path.isdir(path)):	
-	renameDirectory(path, arguments.format, recursive=arguments.recursive)
+	renameDirectory(path, arguments.format, recursive=arguments.recursive, verbose=arguments.verbose)
 
 # check if it's only one file
 elif(os.path.isfile(path)):
-	renameSongFile(path, arguments.format)
+	renameSongFile(path, arguments.format, verbose=arguments.verbose)
