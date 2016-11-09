@@ -3,6 +3,7 @@
 import argparse
 import os
 import re
+import shutil
 import sys
 
 # ###### #
@@ -55,6 +56,7 @@ def parseInfoFromSong(song):
 # @param format  - format that the file should be renamed to
 # @param options - Dictionary to pass the command line options. Possible values are
 #				   verbose (bool) - Prints command line output
+# 				   copy (bool) - copies the files instead of renaming
 # 
 # @return void 
 def renameSongFile(path, format, options={}):
@@ -78,8 +80,12 @@ def renameSongFile(path, format, options={}):
 	# track number
 	new_songname = str.replace(new_songname, "%n", info['tracknumber'])
 
-	# rename the file
-	os.rename(path, "%s/%s%s" % (dir, new_songname, extension))
+	if(options['copy']):
+		# copy the file
+		shutil.copy2(path, "%s/%s%s" % (dir, new_songname, extension))
+	else:
+		# rename the file
+		os.rename(path, "%s/%s%s" % (dir, new_songname, extension))
 
 	# if verbose was set print the renaming
 	if(options['verbose']):
@@ -148,6 +154,7 @@ parser.add_argument('path', help='Path to the directory containing the files or 
 parser.add_argument('format', help=formatHelp)
 parser.add_argument('-r', '--recursive', action='store_true', help="If set the program will go into sub directories and rename those files as well")
 parser.add_argument('-v', '--verbose', action='store_true', help="If set the program will output messages to the command line")
+parser.add_argument('-c', '--copy', action='store_true', help="If set the files will be copied instead of renamed")
 arguments = parser.parse_args()
 
 
@@ -166,7 +173,8 @@ if(not os.path.isdir(path) and not os.path.isfile(path)):
 # build the options object
 options = {
 	'recursive': arguments.recursive, # recursively handle subdirectories
-	'verbose': arguments.verbose 	  # give command line output
+	'verbose': arguments.verbose, 	  # give command line output
+	'copy': arguments.copy			  # copies the files instead of renaming them
 }
 
 # check if it is a full directory that has to be renamed

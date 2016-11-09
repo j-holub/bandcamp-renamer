@@ -38,8 +38,10 @@ The following options can be used to alter the scripts behaviour
 
 |    Option   | Short Version |                          Meaning                         |
 |:-----------:|:-------------:|:--------------------------------------------------------:|
-| --recursive |       -r      |  Files located in subdirectories will be renamed as well |
+|    --copy   |       -c      | Copies the files instead of simply renaming them         |
+| --recursive |       -r      | Files located in subdirectories will be renamed as well  |
 |  --verbose  |       -v      | Messages for the renaming are output to the command line |
+
 
 
 ## Examples
