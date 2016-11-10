@@ -89,11 +89,11 @@ def renameSongFile(path, format, options={}):
 
 	# if verbose was set print the renaming
 	if(options['verbose']):
-		print "--------------------------------------------"
-		print "Directory: %s" % dir
-		print "Old: '%s%s'" % (filename, extension)
-		print "New: '%s%s'" % (new_songname, extension)
-		print "--------------------------------------------"
+		print ("--------------------------------------------")
+		print ("Directory: %s" % dir)
+		print ("Old: '%s%s'" % (filename, extension))
+		print ("New: '%s%s'" % (new_songname, extension))
+		print ("--------------------------------------------")
 
 
 # -------------------------------
@@ -167,7 +167,7 @@ path = os.path.abspath(arguments.path)
 
 # check if path is actually a path or a file
 if(not os.path.isdir(path) and not os.path.isfile(path)):
-	print "ERROR: '%s' is neither a file nor a directory" % path
+	print ("ERROR: '%s' is neither a file nor a directory" % path)
 	sys.exit()
 
 # build the options object
