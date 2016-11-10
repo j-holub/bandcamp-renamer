@@ -15,7 +15,7 @@ file_formats = ['.mp3', '.flac', '.aac', '.ogg', '.oga', '.m4a', '.CAF', '.wav',
 
 # regex to check for the correct file
 #            Artistname        Albumtitle         TrackNr     Songtitle
-pattern = "(\w|\s|\d|\.)*-(\w|\s|\d|\(|\)|\.|,)*-\s\d\d\s(\w|\s|\d|\(|\)|\.|,)*"
+pattern = r"(\w|\s|\d|\.)*-(\w|\s|\d|\(|\)|\.|,)*-\s\d\d\s(\w|\s|\d|\(|\)|\.|,)*"
 regex = re.compile(pattern)
 
 # ######### #
