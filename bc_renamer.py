@@ -35,7 +35,7 @@ def parseInfoFromSong(song):
 	artist, album, songname = str.split(song, ' - ')
 	# seperate track number from track title
 	tracknumber = songname[0:2]
-	songname = songname[2:]
+	songname = songname[3:]
 
 	# return object
 	songinfo = {
