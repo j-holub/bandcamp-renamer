@@ -15,7 +15,7 @@ file_formats = ['.mp3', '.flac', '.aac', '.ogg', '.oga', '.m4a', '.CAF', '.wav',
 
 # regex to check for the correct file
 #            Artistname        Albumtitle         TrackNr     Songtitle
-pattern = r"(\w|\s|\d|\.)*-(\w|\s|\d|\(|\)|\.|,)*-\s\d\d\s(\w|\s|\d|\(|\)|\.|,)*"
+pattern = r"(\w|\s|\d|\.|-)*\s-\s(\w|\s|\d|\(|\)|\.|,)*-\s\d\d\s(\w|\s|\d|\(|\)|\.|,)*"
 regex = re.compile(pattern)
 
 # ######### #
@@ -57,8 +57,8 @@ def parseInfoFromSong(song):
 # @param options - Dictionary to pass the command line options. Possible values are
 #				   verbose (bool) - Prints command line output
 # 				   copy (bool) - copies the files instead of renaming
-# 
-# @return void 
+#
+# @return void
 def renameSongFile(path, format, options={}):
 
 	# split the path
@@ -101,7 +101,7 @@ def renameSongFile(path, format, options={}):
 # Takes the absolute path to a directory containing the song files
 # If these files match one of the extensions specified in 'file_formats'
 # and matches the bandcamp file naming convention, these files are renamed
-# 
+#
 # @param path - absolute path to the directory containing the files
 # @param format - format that the file should be renamed to
 # @param options - Dictionary to pass the command line options. Possible values are
@@ -110,7 +110,6 @@ def renameSongFile(path, format, options={}):
 #
 # @return void
 def renameDirectory(path, format, options={}):
-
 
 	# list all the files in the directory
 	list_of_files = os.listdir(path)
@@ -129,6 +128,7 @@ def renameDirectory(path, format, options={}):
 			extension = os.path.splitext(item)[1]
 			# check for supported extension and bandcamp name format
 			if((str.lower(extension) in file_formats) and regex.match(item)):
+
 				# rename the file
 				renameSongFile("%s/%s" % (path, item), format, options=options)
 
@@ -140,8 +140,8 @@ def renameDirectory(path, format, options={}):
 # Argument Parsing #
 # ################ #
 
-formatHelp = """The Format to rename the file to. Format specifiers are: 
-			
+formatHelp = """The Format to rename the file to. Format specifiers are:
+
 %%a - artist
 %%A - album
 %%t - songtitle
@@ -178,7 +178,7 @@ options = {
 }
 
 # check if it is a full directory that has to be renamed
-if(os.path.isdir(path)):	
+if(os.path.isdir(path)):
 	renameDirectory(path, arguments.format, options=options)
 
 # check if it's only one file
