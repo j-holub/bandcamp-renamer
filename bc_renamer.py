@@ -37,7 +37,9 @@ regex = re.compile(pattern)
 # 'artist', 'album', 'tracknumber', 'songname'
 def parseInfoFromSong(song):
     # get the arist-, album- and songname
-    artist, album, songname = str.split(song, ' - ')
+    # setting maxsplit to 2 here prevents songnames containing ' - ' from
+    # crashing the program.
+    artist, album, songname = song.split(' - ', 2)
     # seperate track number from track title
     tracknumber = songname[0:2]
     songname = songname[3:]
@@ -55,11 +57,13 @@ def parseInfoFromSong(song):
 # --------------------------
 
 
-# Takes the absolute path to a file and renames it according to the format given
+# Takes the absolute path to a file and renames it according to the format
+# given
 #
 # @param path    - absolute path to the songfile
 # @param format  - format that the file should be renamed to
-# @param options - Dictionary to pass the command line options. Possible values are
+# @param options - Dictionary to pass the command line options. Possible values
+#                  are
 #                  verbose (bool) - Prints command line output
 #                  copy (bool) - copies the files instead of renaming
 #
@@ -109,8 +113,10 @@ def renameSongFile(path, format, options={}):
 #
 # @param path - absolute path to the directory containing the files
 # @param format - format that the file should be renamed to
-# @param options - Dictionary to pass the command line options. Possible values are
-#                  recursive (bool) - subdirectories are renamed as well in a recursive fashion
+# @param options - Dictionary to pass the command line options. Possible
+#                  values are:
+#                  recursive (bool) - subdirectories are renamed as well in a
+#                                     recursive fashion
 #                  verbose (bool)   - Prints command line output
 #
 # @return void
@@ -156,14 +162,16 @@ parser = argparse.ArgumentParser(description="Renames songs downloaded from"
                                              " bandcamp to a format you like",
                                  formatter_class=argparse.RawTextHelpFormatter)
 parser.add_argument('path',
-                    help='Path to the directory containing the files or the file itself')
+                    help='Path to the directory containing the files or the'
+                         ' file itself')
 parser.add_argument('format',
                     help=formatHelp)
 parser.add_argument('-r', '--recursive', action='store_true',
                     help="If set the program will go into sub directories and"
                     " rename those files as well")
 parser.add_argument('-v', '--verbose', action='store_true',
-                    help="If set the program will output messages to the command line")
+                    help='If set the program will output messages to the'
+                         ' command line')
 parser.add_argument('-c', '--copy', action='store_true',
                     help="If set the files will be copied instead of renamed")
 arguments = parser.parse_args()
@@ -185,7 +193,8 @@ if(not os.path.isdir(path) and not os.path.isfile(path)):
 options = {
     'recursive': arguments.recursive,  # recursively handle subdirectories
     'verbose': arguments.verbose,      # give command line output
-    'copy': arguments.copy             # copies the files instead of renaming them
+    'copy': arguments.copy             # copies the files instead of renaming
+                                       # them
 }
 
 # check if it is a full directory that has to be renamed

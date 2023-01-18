@@ -2,15 +2,18 @@
 
 # Author: Jay Oliver
 # Date Created: 15/09/2022
-# Date Last Modified: 15/09/2022
+# Date Last Modified: 18/01/2023
 # Comments:
 # This script should be run from the same directory as the stuff you wish to
-# move to the music directory
+# move to the music directory; ideally in a 'Downloads' directory.
 #
 # !!!!!!!!!!!!!!!!!!!!!!!!! NOTE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# the music and bandcamp program directories are hardcoded below. Set them
+# the music and bandcamp script directories are hardcoded below. Set them
 # as needed lest you stuff ends up in space or something.....
 
+
+# Functions
+#######################################################################
 trim_space () {
     echo "${1}" | xargs
 }
@@ -23,13 +26,41 @@ mk_if_not () {
     fi
 }
 
+# Variables
+#######################################################################
 # ensure a '/' is NOT the last character pls
-music_dir="/home/jo/Music" 
-bc_dic="/home/jo/programs/mint/bandcamp-renamer"
+music_dir="../Music" 
+bc_dir="../bandcamp-renamer"
+python_ver=python3
+
+if [ ! -d $music_dir ]; then
+    echo "The specified music directory $music_dir wasn't found."
+    exit 1
+fi
+
+if [ ! -d $bc_dir ]; then
+    echo "The specified python script directory $bc_dir wasn't found."
+    exit 1
+fi
+
+# Script variables. You shouldn't need to change these.
 band_al_sep=0
 band=''
 album=''
 full_fname=${1%/*}
+
+# Script
+#######################################################################
+if ! hash 7z 2>/dev/null; then
+    echo "7zip is required for this script. Aborting."
+    exit 1
+fi
+
+if ! hash $python_ver 2>/dev/null; then
+    echo "Python is required for this script. Ensure it is installed and that"
+    echo "the version provided above is one on your system."
+    exit 1
+fi
 
 for i in $@
 do
@@ -55,5 +86,4 @@ final_dir="$music_dir/$band/$album/"
 
 7z e -o"$final_dir" "$full_fname" 
 
-python3 "$bc_dic/bc_renamer.py" "$final_dir" "%n %t"
-echo Everything should be good!
+$python_ver "$bc_dir/bc_renamer.py" "$final_dir" "%n %t"
